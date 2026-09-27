@@ -1,0 +1,48 @@
+# Byte-compiled / optimized files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Build output
+build/
+dist/
+*.build/
+*.dist/
+*.onefile-build/
+nuitka-build.log
+nuitka-crash-report.xml
+build-compare/
+
+# Virtual environments
+.venv/
+.venv*/
+venv/
+env/
+
+# Packaging / metadata
+*.egg-info/
+.eggs/
+
+# Tooling caches
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Editor / OS cruft
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini
+
+# Agent working notes -- personal memory, deliberately not shared
+AGENTS.md
+.agents/
+
+# Scratch files and visual-check screenshots
+_*.png
+*.tmp
+
+# A game log that was once copied in by accident
+myeasylog.log

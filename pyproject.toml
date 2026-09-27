@@ -1,0 +1,91 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "bt2fusion"
+# Single source of truth: `__version__` in src/bt2fusion/__init__.py. The build
+# script and the exe's VersionInfo both read it from there.
+dynamic = ["version"]
+description = "Switch the login channel of 生死狙击2 (国服)"
+readme = "README.md"
+# Runtime requirement is deliberately loose: the code is pure standard library
+# plus CustomTkinter, and `vermin` reports 3.10 as the true floor. Only the
+# *build* needs 3.12 (3.12 ships Tcl/Tk 8.6, 3.13+ ship Tk 9.0 at roughly
+# twice the size), and that is enforced by packaging/build.py rather than
+# here, so running from source stays unconstrained.
+requires-python = ">=3.10"
+# The MIT licence covers this project's own code only. The bundled channel
+# profiles are third-party data and are not covered by it -- see
+# src/bt2fusion/data/profiles/README.md.
+license = "MIT"
+license-files = ["LICENSE"]
+keywords = ["bt2", "ssjj2", "生死狙击2", "launcher", "channel"]
+# The bundled channel profiles are redistributed from cloud-drive links
+# shared by the Bilibili creator 考官家恒:
+# https://www.bilibili.com/video/BV1NZ421m7Qy
+# See src/bt2fusion/data/profiles/README.md for details.
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Win32 (MS Windows)",
+    "Intended Audience :: End Users/Desktop",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Utilities",
+]
+dependencies = [
+    "customtkinter>=5.2",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7",
+    "ruff>=0.5",
+    # Verifies the declared minimum Python version instead of guessing it:
+    # `.venv\Scripts\vermin src packaging tools tests`
+    "vermin>=1.6",
+]
+build = [
+    "nuitka>=2.0",
+]
+
+[project.gui-scripts]
+bt2fusion-gui = "bt2fusion.gui:main"
+
+[project.scripts]
+bt2fusion = "bt2fusion.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/demoliisher/bt2fusion"
+
+[tool.hatch.version]
+path = "src/bt2fusion/__init__.py"
+
+[tool.hatch.build.targets.wheel]
+# ``packages`` already covers ``data/`` (it lives inside the package), so an
+# extra ``force-include`` for it would add every file twice and make the wheel
+# build fail with "A second file is being added to the wheel archive".
+packages = ["src/bt2fusion"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+filterwarnings = ["error::DeprecationWarning"]
+
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "C4", "SIM", "RUF"]
+ignore = [
+    "RUF001",  # ambiguous unicode in strings (Chinese text is intentional)
+    "RUF002",
+    "RUF003",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["E501"]
